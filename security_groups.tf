@@ -27,7 +27,7 @@ resource "aws_security_group" "lb_sg" {
 }
 
 #Create SG for allowing TCP/8080 from * and TCP/22 from your IP in primary vpc
-resource "aws_security_group" "jenkins_sg" {
+resource "aws_security_group" "jenkins_sg_primary" {
   provider    = aws.region_primary
   name        = "jenkins-sg-primary"
   description = "Allow TCP/8080 & TCP/22"
@@ -62,7 +62,7 @@ resource "aws_security_group" "jenkins_sg" {
 }
 
 #Create SG for allowing TCP/22 from your IP in secondary vpc
-resource "aws_security_group" "jenkins_sg_oregon" {
+resource "aws_security_group" "jenkins_sg_secondary" {
   provider    = aws.region_secondary
   name        = "jenkins-sg-secondary"
   description = "Allow TCP/8080 & TCP/22"
