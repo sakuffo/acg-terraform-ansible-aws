@@ -4,6 +4,6 @@ terraform {
     region  = "us-east-1"
     profile = "default"
     key     = "saa-tfstatefile"
-    bucket  = "saa-terraform-state-bucket-02"
+    bucket  = "saa-terraform-state-bucket"
   }
 }

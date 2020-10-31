@@ -18,7 +18,14 @@ variable "external_ip" {
   default = "0.0.0.0/0"
 }
 
-variable "name" {
-  type = string
-  description = "(optional) describe your variable"
+variable "secondary_count" {
+  type        = string
+  description = "How many nodes?"
+  default     = 2
+}
+
+variable "instance_type" {
+  type        = string
+  description = "the instance type of the nodes"
+  default     = "t3.micro"
 }
