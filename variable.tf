@@ -21,7 +21,7 @@ variable "external_ip" {
 variable "secondary_count" {
   type        = string
   description = "How many nodes?"
-  default     = 2
+  default     = 3
 }
 
 variable "instance_type" {

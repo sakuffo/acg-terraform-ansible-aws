@@ -37,7 +37,7 @@ resource "aws_instance" "jenkins_primary" {
     command = "aws ec2 wait instance-status-ok --region ${var.region_primary} --instance-ids ${self.id} --profile ${var.profile}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ./ansible_templates/install_primary.yaml"
   }
   tags = {
-    Name = "jenkins-primary-tf"
+    Name = "jenkins_primary_tf"
   }
   depends_on = [aws_main_route_table_association.set-primary-default-rt-assoc]
 }
@@ -55,12 +55,12 @@ resource "aws_instance" "jenkins_secondary" {
   subnet_id                   = aws_subnet.secondary_subnet_1.id
 
   tags = {
-    Name = join("-", ["jenkins-secondary-tf", count.index + 1])
+    Name = join("-", ["jenkins_secondary_tf", count.index + 1])
   }
   depends_on = [aws_main_route_table_association.set-secondary-default-rt-assoc, aws_instance.jenkins_primary]
 
   provisioner "local-exec" {
-    command = "aws ec2 wait instance-status-ok --region ${var.region_secondary} --instance-ids ${self.id} --profile ${var.profile}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ./ansible_templates/install_secondary.yaml"
+    command =  "aws ec2 wait instance-status-ok --region ${var.region_secondary} --instance-ids ${self.id} --profile ${var.profile}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ./ansible_templates/install_secondary.yaml"
   }
 
   # user_data = <<EOF

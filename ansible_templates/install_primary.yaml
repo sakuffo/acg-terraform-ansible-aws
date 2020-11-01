@@ -1,5 +1,8 @@
 ---
-- hosts: {{ passed in hosts }}
+- hosts: "{{ passed_in_hosts }}"
+  remote_user: ec2-user
+  vars:
+    key_name: jenkins
   become: yes
   become_user: root
   tasks:
