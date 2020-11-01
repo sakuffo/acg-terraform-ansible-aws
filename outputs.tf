@@ -7,3 +7,7 @@ output "Jenkins-Secondary-Node-Public-IP" {
     for instance in aws_instance.jenkins_secondary : instance.id => instance.public_ip
   }
 }
+
+output "LB_DNS_NAME" {
+  value = aws_lb.application_lb.dns_name
+}
