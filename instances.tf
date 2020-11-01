@@ -47,7 +47,7 @@ resource "aws_instance" "jenkins_primary" {
   provisioner "local-exec" {
     command = <<EOF
               aws ec2 wait instance-status-ok --region ${var.region_primary} --instance-ids ${self.id}
-              ansible-playbook ansible_templates/jenkins-primary-sample.yaml
+              ansible-playbook ansible_templates/jenkins-primary-sample.yml
               EOF
   }
 }
@@ -76,6 +76,6 @@ resource "aws_instance" "jenkins_secondary" {
               EOF
 
   # provisioner "local-exec" {
-  #   command = "aws ec2 wait instance-status-ok --region ${var.region_secondary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-primary-sample.yaml"
+  #   command = "aws ec2 wait instance-status-ok --region ${var.region_secondary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-primary-sample.yml"
   # }
 }
