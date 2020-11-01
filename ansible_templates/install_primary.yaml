@@ -1,5 +1,5 @@
 ---
-- hosts: jenkins-primary
+- hosts: {{ passed in hosts }}
   become: yes
   become_user: root
   tasks:
