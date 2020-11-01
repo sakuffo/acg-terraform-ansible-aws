@@ -33,11 +33,20 @@ resource "aws_instance" "jenkins_primary" {
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.jenkins_sg_primary.id]
   subnet_id                   = aws_subnet.primary_subnet_1.id
+  user_data                   = <<EOF
+                                #! /bin/bash
+                                sudo yum update
+                                sudo yum install -y git
+                                EOF
 
   tags = {
     Name = "jenkins-primary-tf"
   }
   depends_on = [aws_main_route_table_association.set-primary-default-rt-assoc]
+
+  # provisioner "local-exec" {
+  #   command = "aws ec2 wait instance-status-ok --region ${var.region_primary} --instance-ids ${self.id}\nansible-playbook --extra-vars \"passed_in_hosts=tag_Name_${self.tags.Name}\" ansible_templates/jenkins-primary-sample.yaml --profile ${var.profile}"
+  # }
 }
 
 
@@ -56,4 +65,14 @@ resource "aws_instance" "jenkins_secondary" {
     Name = join("-", ["jenkins-secondary-tf", count.index + 1])
   }
   depends_on = [aws_main_route_table_association.set-secondary-default-rt-assoc, aws_instance.jenkins_primary]
+
+  user_data = <<EOF
+      #! /bin/bash
+                  sudo yum update
+      sudo yum install -y jq
+	EOF
+
+  # provisioner "local-exec" {
+  #   command = "aws ec2 wait instance-status-ok --region ${var.region_secondary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-primary-sample.yaml"
+  # }
 }

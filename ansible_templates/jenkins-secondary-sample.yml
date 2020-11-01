@@ -1,3 +1,4 @@
+#Ansible Jenkins Secondary, sample playbook - jenkins-worker-sample.yml
 ---
 - hosts: "{{ passed_in_hosts }}"
   become: yes

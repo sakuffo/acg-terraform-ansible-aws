@@ -1,4 +1,3 @@
----
 - hosts: "{{ passed_in_hosts }}"
   become: yes
   remote_user: ec2-user

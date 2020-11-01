@@ -41,8 +41,8 @@ resource "aws_security_group" "jenkins_sg_primary" {
   }
   ingress {
     description     = "Allow anyone on port 8080"
-    from_port       = 8080
-    to_port         = 8080
+    from_port       = var.webserver_port
+    to_port         = var.webserver_port
     protocol        = "tcp"
     security_groups = [aws_security_group.lb_sg.id]
   }

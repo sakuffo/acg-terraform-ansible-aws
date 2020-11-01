@@ -29,3 +29,8 @@ variable "instance_type" {
   description = "the instance type of the nodes"
   default     = "t3.micro"
 }
+
+variable "webserver_port" {
+  type    = number
+  default = 80
+}
