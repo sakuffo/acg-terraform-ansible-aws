@@ -1,9 +1,7 @@
 ---
 - hosts: "{{ passed_in_hosts }}"
-  become: yes
   remote_user: ec2-user
-  vars:
-    key_name: jenkins
+  become: yes
   become_user: root
   tasks:
     - name: install jq, JSON parser

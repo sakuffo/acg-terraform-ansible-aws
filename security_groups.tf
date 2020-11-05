@@ -1,6 +1,6 @@
 #Create SG for LB, only TCP/80,TCP/443 and outbound access
 resource "aws_security_group" "lb_sg" {
-  provider    = aws.region_primary
+  provider    = aws.region-primary
   name        = "lb-sg"
   description = "Allow 443 and traffic to Jenkins SG"
   vpc_id      = aws_vpc.vpc_primary.id
@@ -28,7 +28,7 @@ resource "aws_security_group" "lb_sg" {
 
 #Create SG for allowing TCP/8080 from * and TCP/22 from your IP in primary vpc
 resource "aws_security_group" "jenkins_sg_primary" {
-  provider    = aws.region_primary
+  provider    = aws.region-primary
   name        = "jenkins-sg-primary"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_primary.id
@@ -37,12 +37,12 @@ resource "aws_security_group" "jenkins_sg_primary" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.external_ip]
+    cidr_blocks = [var.external-ip]
   }
   ingress {
     description     = "Allow anyone on port 8080"
-    from_port       = var.webserver_port
-    to_port         = var.webserver_port
+    from_port       = var.webserver-port
+    to_port         = var.webserver-port
     protocol        = "tcp"
     security_groups = [aws_security_group.lb_sg.id]
   }
@@ -63,7 +63,7 @@ resource "aws_security_group" "jenkins_sg_primary" {
 
 #Create SG for allowing TCP/22 from your IP in secondary vpc
 resource "aws_security_group" "jenkins_sg_secondary" {
-  provider    = aws.region_secondary
+  provider    = aws.region-secondary
   name        = "jenkins-sg-secondary"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_secondary.id
@@ -72,7 +72,7 @@ resource "aws_security_group" "jenkins_sg_secondary" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.external_ip]
+    cidr_blocks = [var.external-ip]
   }
   ingress {
     description = "Allow traffic from primary"

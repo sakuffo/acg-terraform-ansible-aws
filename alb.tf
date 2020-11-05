@@ -1,5 +1,5 @@
 resource "aws_lb" "application_lb" {
-  provider           = aws.region_primary
+  provider           = aws.region-primary
   name               = "jenkins-lb"
   internal           = false
   load_balancer_type = "application"
@@ -11,16 +11,16 @@ resource "aws_lb" "application_lb" {
 }
 
 resource "aws_lb_target_group" "app_lb_tg" {
-  provider = aws.region_primary
+  provider = aws.region-primary
   name     = "app-lb-tg"
-  port     = var.webserver_port
+  port     = var.webserver-port
   vpc_id   = aws_vpc.vpc_primary.id
   protocol = "HTTP"
   health_check {
     enabled  = true
     interval = 10
     path     = "/"
-    port     = var.webserver_port
+    port     = var.webserver-port
     protocol = "HTTP"
     matcher  = "200-299"
   }
@@ -30,7 +30,7 @@ resource "aws_lb_target_group" "app_lb_tg" {
 }
 
 resource "aws_lb_listener" "jenkins_listener_http" {
-  provider          = aws.region_primary
+  provider          = aws.region-primary
   load_balancer_arn = aws_lb.application_lb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -41,8 +41,8 @@ resource "aws_lb_listener" "jenkins_listener_http" {
 }
 
 resource "aws_lb_target_group_attachment" "jenkins_primary_attach" {
-  provider         = aws.region_primary
+  provider         = aws.region-primary
   target_group_arn = aws_lb_target_group.app_lb_tg.arn
-  target_id        = aws_instance.jenkins_primary.id
-  port             = var.webserver_port
+  target_id        = aws_instance.jenkins-primary.id
+  port             = var.webserver-port
 }

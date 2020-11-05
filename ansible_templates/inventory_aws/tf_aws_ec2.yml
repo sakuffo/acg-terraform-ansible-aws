@@ -23,14 +23,14 @@ keyed_groups:
   # the following keyed groups are from the aws url:
   # https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html#options   
   # below are some of the variable that can be used.  
-  # an example for instance_type: 
-  # aws_instance_type_t2_micro
+  # an example for instance-type: 
+  # aws_instance-type_t2_micro
   - key: architecture
     prefix: arch
   - key: tags.Applications
     separator: ''
-  - key: instance_type
-    prefix: aws_instance_type
+  - key: instance-type
+    prefix: aws_instance-type
   - key: placement.region
     prefix: aws_region
   - key: image_id

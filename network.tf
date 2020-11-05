@@ -2,7 +2,7 @@
 
 #Create VPC in us-east-1
 resource "aws_vpc" "vpc_primary" {
-  provider             = aws.region_primary
+  provider             = aws.region-primary
   cidr_block           = "10.10.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -13,7 +13,7 @@ resource "aws_vpc" "vpc_primary" {
 
 #Create VPC in us-east-2
 resource "aws_vpc" "vpc_secondary" {
-  provider             = aws.region_secondary
+  provider             = aws.region-secondary
   cidr_block           = "192.10.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -27,15 +27,15 @@ resource "aws_vpc" "vpc_secondary" {
 #Initiate Peering connection request from us-east-1 to us-west-2
 
 resource "aws_vpc_peering_connection" "primary_to_secondary" {
-  provider    = aws.region_primary
+  provider    = aws.region-primary
   peer_vpc_id = aws_vpc.vpc_secondary.id
   vpc_id      = aws_vpc.vpc_primary.id
-  peer_region = var.region_secondary
+  peer_region = var.region-secondary
 }
 
 #Accept VPC peering request in us-west 2 from us-east-1
 resource "aws_vpc_peering_connection_accepter" "secondary_accept_peering" {
-  provider                  = aws.region_secondary
+  provider                  = aws.region-secondary
   vpc_peering_connection_id = aws_vpc_peering_connection.primary_to_secondary.id
   auto_accept               = true
 }
@@ -44,12 +44,12 @@ resource "aws_vpc_peering_connection_accepter" "secondary_accept_peering" {
 
 #Create IGW in us-east-1
 resource "aws_internet_gateway" "igw_primary" {
-  provider = aws.region_primary
+  provider = aws.region-primary
   vpc_id   = aws_vpc.vpc_primary.id
 }
 #Create IGW in us-west-2
 resource "aws_internet_gateway" "igw_secondary" {
-  provider = aws.region_secondary
+  provider = aws.region-secondary
   vpc_id   = aws_vpc.vpc_secondary.id
 }
 
@@ -57,7 +57,7 @@ resource "aws_internet_gateway" "igw_secondary" {
 
 ## Create Route table for Primary VPC
 resource "aws_route_table" "internet_route_primary" {
-  provider = aws.region_primary
+  provider = aws.region-primary
   vpc_id   = aws_vpc.vpc_primary.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -78,14 +78,14 @@ resource "aws_route_table" "internet_route_primary" {
 
 ## Overwrite default route table of Primary VPC with out route table entries
 resource "aws_main_route_table_association" "set-primary-default-rt-assoc" {
-  provider       = aws.region_primary
+  provider       = aws.region-primary
   vpc_id         = aws_vpc.vpc_primary.id
   route_table_id = aws_route_table.internet_route_primary.id
 }
 
 ## Create Route table for Secondary VPC
 resource "aws_route_table" "internet_route_secondary" {
-  provider = aws.region_secondary
+  provider = aws.region-secondary
   vpc_id   = aws_vpc.vpc_secondary.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -105,7 +105,7 @@ resource "aws_route_table" "internet_route_secondary" {
 
 ## Overwrite default route table of Secondary VPC with out route table entries
 resource "aws_main_route_table_association" "set-secondary-default-rt-assoc" {
-  provider       = aws.region_secondary
+  provider       = aws.region-secondary
   vpc_id         = aws_vpc.vpc_secondary.id
   route_table_id = aws_route_table.internet_route_secondary.id
 }
@@ -114,13 +114,13 @@ resource "aws_main_route_table_association" "set-secondary-default-rt-assoc" {
 
 #Get all available AZ's in VPC for primary region
 data "aws_availability_zones" "azs" {
-  provider = aws.region_primary
+  provider = aws.region-primary
   state    = "available"
 }
 
 #Create subnet # 1 in us-east-1
 resource "aws_subnet" "primary_subnet_1" {
-  provider          = aws.region_primary
+  provider          = aws.region-primary
   availability_zone = element(data.aws_availability_zones.azs.names, 0)
   vpc_id            = aws_vpc.vpc_primary.id
   cidr_block        = "10.10.1.0/24"
@@ -128,14 +128,14 @@ resource "aws_subnet" "primary_subnet_1" {
 
 #Create subnet # 2 in us-east-1
 resource "aws_subnet" "primary_subnet_2" {
-  provider          = aws.region_primary
+  provider          = aws.region-primary
   availability_zone = element(data.aws_availability_zones.azs.names, 1)
   vpc_id            = aws_vpc.vpc_primary.id
   cidr_block        = "10.10.2.0/24"
 }
 #Create subnet # 1 in us-west-1
 resource "aws_subnet" "secondary_subnet_1" {
-  provider = aws.region_secondary
+  provider = aws.region-secondary
 
   vpc_id     = aws_vpc.vpc_secondary.id
   cidr_block = "192.10.1.0/24"
