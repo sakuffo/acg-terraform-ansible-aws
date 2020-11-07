@@ -37,11 +37,8 @@ resource "aws_instance" "jenkins-primary" {
     Name = "jenkins_primary_tf"
   }
   provisioner "local-exec" {
-    command = <<EOF
-aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-primary} --instance-ids ${self.id} \
-&& ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/install_primary.yaml
-EOF
-}
+    command = "aws ec2 wait instance-status-ok --region ${var.region-primary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/install_primary.yaml"
+  }
   depends_on = [aws_main_route_table_association.set-primary-default-rt-assoc]
 }
 
@@ -57,20 +54,10 @@ resource "aws_instance" "jenkins_secondary" {
   vpc_security_group_ids      = [aws_security_group.jenkins_sg_secondary.id]
   subnet_id                   = aws_subnet.secondary_subnet_1.id
   provisioner "local-exec" {
-    command = <<EOF
-aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-secondary} --instance-ids ${self.id} \
-&& ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master_ip=${aws_instance.jenkins-primary.private_ip}' ansible_templates/install_worker.yaml
-EOF
+    command = "aws ec2 wait instance-status-ok --region ${var.region-secondary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} master_ip=${aws_instance.jenkins-primary.private_ip}' ansible_templates/install_secondary.yaml"
   }
   tags = {
     Name = join("_", ["jenkins_secondary_tf", count.index + 1])
   }
   depends_on = [aws_main_route_table_association.set-secondary-default-rt-assoc, aws_instance.jenkins-primary, ]
-
-  # user_data = <<EOF
-  #             #! /bin/bash
-  #             sudo yum update
-  #             sudo yum install -y jq
-  #             EOF
-
 }
