@@ -32,10 +32,10 @@ variable "instance-type" {
 
 variable "webserver-port" {
   type    = number
-  default = 8080
+  default = 80
 }
 
 variable "dns-name" {
   type    = string
-  default = "cmcloudlab1024.info."
+  description = "cmcloudlab1024.info."
 }
