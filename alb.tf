@@ -11,15 +11,16 @@ resource "aws_lb" "application-lb" {
 }
 
 resource "aws_lb_target_group" "app-lb-tg" {
-  provider = aws.region-primary
-  name     = "app-lb-tg"
-  port     = var.webserver-port
-  vpc_id   = aws_vpc.vpc_primary.id
-  protocol = "HTTP"
+  provider    = aws.region-primary
+  name        = "app-lb-tg"
+  port        = var.webserver-port
+  target_type = "instance"
+  vpc_id      = aws_vpc.vpc_primary.id
+  protocol    = "HTTP"
   health_check {
     enabled  = true
     interval = 10
-    path     = "/"
+    path     = "/login"
     port     = var.webserver-port
     protocol = "HTTP"
     matcher  = "200-299"
@@ -43,12 +44,12 @@ resource "aws_lb_listener" "jenkins-listener-http" {
     }
   }
 }
-
-resource "aws_lb_listener" "jenkins-listener-https" {
+resource "aws_lb_listener" "jenkins-listener" {
   provider          = aws.region-primary
   load_balancer_arn = aws_lb.application-lb.arn
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   port              = "443"
+  protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.jenkins-lb-https.arn
   default_action {
     type             = "forward"
