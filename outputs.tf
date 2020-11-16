@@ -9,5 +9,9 @@ output "Jenkins-Secondary-Node-Public-IP" {
 }
 
 output "LB_DNS_NAME" {
-  value = aws_lb.application_lb.dns_name
+  value = aws_lb.application-lb.dns_name
+}
+
+output "url" {
+  value = aws_route53_record.jenkins.fqdn
 }
