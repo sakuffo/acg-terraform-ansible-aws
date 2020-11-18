@@ -37,5 +37,6 @@ variable "webserver-port" {
 
 variable "dns-name" {
   type        = string
+  default     = "cmcloudlab1814.info."
   description = "Please enter your DNS record ending with the '.'"
 }
