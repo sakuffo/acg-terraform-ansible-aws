@@ -47,7 +47,7 @@
    
     - name: Get Jenkins CLI jar file
       vars:
-        master: "{{ master_ip }}"
+        master: "{{ primary_ip }}"
       get_url:
         url: "http://{{ master }}:8080/jnlpJars/jenkins-cli.jar"
         dest: /home/ec2-user/jenkins-cli.jar
@@ -74,10 +74,10 @@
 
     - name: Create Jenkins Credential
       vars:
-        master: "{{ master_ip }}"
+        master: "{{ primary_ip }}"
       shell: "cat /home/ec2-user/creds.xml | java -jar /home/ec2-user/jenkins-cli.jar -auth @/home/ec2-user/jenkins_auth -s http://{{master}}:8080 create-credentials-by-xml system::system::jenkins _"
 
     - name: Register node as worker
       vars:
-        master: "{{ master_ip }}"
+        master: "{{ primary_ip }}"
       shell: 'cat /home/ec2-user/node.xml | java -jar /home/ec2-user/jenkins-cli.jar -auth @/home/ec2-user/jenkins_auth -s http://{{ master }}:8080 create-node'

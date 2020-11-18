@@ -33,7 +33,7 @@ resource "aws_lb_target_group" "app-lb-tg" {
 resource "aws_lb_listener" "jenkins-listener-http" {
   provider          = aws.region-primary
   load_balancer_arn = aws_lb.application-lb.arn
-  port              = "80"
+  port              = "8080"
   protocol          = "HTTP"
   default_action {
     type = "redirect"
