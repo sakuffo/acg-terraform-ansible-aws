@@ -21,7 +21,7 @@ variable "external-ip" {
 variable "secondary-count" {
   type        = string
   description = "How many nodes?"
-  default     = 3
+  default     = 2
 }
 
 variable "instance-type" {
@@ -36,6 +36,7 @@ variable "webserver-port" {
 }
 
 variable "dns-name" {
-  type    = string
-  description = "cmcloudlab1024.info."
+  type        = string
+  # default     = "cmcloudlab542.info."
+  description = "Please enter your DNS record ending with the '.'"
 }

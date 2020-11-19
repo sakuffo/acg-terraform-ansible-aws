@@ -4,7 +4,7 @@ output "Jenkins-Main-Node-Public-IP" {
 
 output "Jenkins-Secondary-Node-Public-IP" {
   value = {
-    for instance in aws_instance.jenkins_secondary : instance.id => instance.public_ip
+    for instance in aws_instance.jenkins-secondary : instance.id => instance.public_ip
   }
 }
 

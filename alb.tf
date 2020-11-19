@@ -30,7 +30,22 @@ resource "aws_lb_target_group" "app-lb-tg" {
   }
 }
 
-resource "aws_lb_listener" "jenkins-listener-http" {
+resource "aws_lb_listener" "jenkins-listener-http-8080" {
+  provider          = aws.region-primary
+  load_balancer_arn = aws_lb.application-lb.arn
+  port              = "8080"
+  protocol          = "HTTP"
+  default_action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "jenkins-listener-http-80" {
   provider          = aws.region-primary
   load_balancer_arn = aws_lb.application-lb.arn
   port              = "80"
@@ -44,6 +59,7 @@ resource "aws_lb_listener" "jenkins-listener-http" {
     }
   }
 }
+
 resource "aws_lb_listener" "jenkins-listener" {
   provider          = aws.region-primary
   load_balancer_arn = aws_lb.application-lb.arn
