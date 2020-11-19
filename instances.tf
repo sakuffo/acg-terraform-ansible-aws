@@ -42,7 +42,6 @@ resource "aws_instance" "jenkins-primary" {
   depends_on = [aws_main_route_table_association.set-primary-default-rt-assoc]
 }
 
-
 #Create and bootstraap EC2 in secondary
 resource "aws_instance" "jenkins-secondary" {
   provider                    = aws.region-secondary
@@ -57,21 +56,21 @@ resource "aws_instance" "jenkins-secondary" {
   provisioner "remote-exec" {
     when = destroy
     inline = [
-      "java -jar /home/ec2-user/jenkins-cli.jar -auth @/home/ec2-user/jenkins_auth -s http://${self.tags.Primary_Private_IP}:8080 delete-node ${self.private_ip}"
+      "java -jar /home/ec2-user/jenkins-cli.jar -auth @/home/ec2-user/jenkins_auth -s http://${self.tags.Primary_Private_IP}:8080 -auth @/home/ec2-user/jenkins_auth delete-node ${self.private_ip}"
     ]
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("~/.ssh/jenkins")
+      private_key = file("~/.ssh/id_rsa")
       host        = self.public_ip
     }
   }
 
   provisioner "local-exec" {
-    command = "aws ec2 wait instance-status-ok --region ${var.region-secondary} --instance-ids ${self.id}\nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} primary_ip=${self.tags.Primary_Private_IP}' ansible_templates/install_secondary.yaml"
-  }
+    command = "aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-secondary} --instance-ids ${self.id} \nansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name} primary_ip=${self.tags.Primary_Private_IP}' ansible_templates/install_secondary.yaml"
+}
   tags = {
-    Name = join("_", ["jenkins-secondary_tf", count.index + 1])
+    Name              = join("_", ["jenkins_secondary_tf", count.index + 1])
     Primary_Private_IP = aws_instance.jenkins-primary.private_ip
   }
 }
